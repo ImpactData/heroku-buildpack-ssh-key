@@ -35,3 +35,14 @@ ssh-keyscan -H github.com >> ~/.ssh/known_hosts 2> /dev/null
 cat "$ENV_DIR/BUILDPACK_SSH_KEY" > ~/.ssh/id_rsa
 echo >> ~/.ssh/id_rsa
 chmod 600 ~/.ssh/id_rsa
+
+if pgrep -x ssh-agent >/dev/null
+then
+  echo "-----> SSH Agent is running"
+else
+  echo "-----> Starting SSH agent"
+  eval `ssh-agent -s`
+  ssh-add ~/.ssh/id_rsa
+fi
+
+echo "-----> $(ssh -T git@github.com)"
